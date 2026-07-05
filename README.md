@@ -6,6 +6,7 @@ Platform Architecture: Proxmox VE / Ubuntu Server Base Layer
 In modern cloud environments, session token tracking mechanisms are a high-value vector for advanced threat actors. Traditional defensive systems often fail to intercept Pass-the-Cookie / Session Hijacking attacks once an active verification token has been established.
 Project Aether-Shield is a self-contained "Red vs. Blue" simulation lab. It deploys an intentionally vulnerable corporate Operations Portal that models how flaws in validation architectures can allow attackers to steal session data via Cross-Site Scripting (XSS) and bypass Multi-Factor Authentication (MFA) via Session Replay.
 Simultaneously, the platform routes edge traffic through Nginx configured for SIEM-Ready JSON Logging. This generates deep, structured telemetry, creating a realistic forensic trace of the attack lifecycle for Blue Team hunting and incident analysis.
+
        [ Attacker / Recon Traffic ]
                     │
                     ▼ (TCP Port 80)
@@ -21,7 +22,7 @@ Simultaneously, the platform routes edge traffic through Nginx configured for SI
    └────────────────────────────────┘
 
 
-2. Infrastructure Sizing & Provisioning Blueprint
+3. Infrastructure Sizing & Provisioning Blueprint
 Deploy this lab environment inside a dedicated, isolated hypervisor node (VirtualBox or Proxmox VE) using these system specifications:
 Operating System: Ubuntu Server 24.04 LTS or Debian 12 Minimal
 Processor (vCPUs): 2 Cores (Intel VT-x/AMD-V virtualization enabled)
@@ -34,7 +35,7 @@ chmod +x deploy-enterprise-range.sh
 sudo ./deploy-enterprise-range.sh
 
 
-3. Red Team Playbook: The Compromise Chain
+4. Red Team Playbook: The Compromise Chain
 The attack path illustrates the progression from initial discovery to administrative session replay.
 Step 1: Reconnaissance (Web Surface Profiling)
 Scanning the public platform surfaces exposes explicit technology configurations.
