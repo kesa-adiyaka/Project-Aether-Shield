@@ -1,8 +1,8 @@
-Project Aether-Shield: Active Session Hijacking & Forensics Telemetry Range
+# Project Aether-Shield: Active Session Hijacking & Forensics Telemetry Range
 Focus: Defensive Infrastructure Engineering & Session Replay Forensic Hunting
 Platform Architecture: Proxmox VE / Ubuntu Server Base Layer
 
-1. Project Overview & Operational Context
+**1. Project Overview & Operational Context**
 In modern cloud environments, session token tracking mechanisms are a high-value vector for advanced threat actors. Traditional defensive systems often fail to intercept Pass-the-Cookie / Session Hijacking attacks once an active verification token has been established.
 Project Aether-Shield is a self-contained "Red vs. Blue" simulation lab. It deploys an intentionally vulnerable corporate Operations Portal that models how flaws in validation architectures can allow attackers to steal session data via Cross-Site Scripting (XSS) and bypass Multi-Factor Authentication (MFA) via Session Replay.
 Simultaneously, the platform routes edge traffic through Nginx configured for SIEM-Ready JSON Logging. This generates deep, structured telemetry, creating a realistic forensic trace of the attack lifecycle for Blue Team hunting and incident analysis.
@@ -10,19 +10,21 @@ Simultaneously, the platform routes edge traffic through Nginx configured for SI
        [ Attacker / Recon Traffic ]
                     │
                     ▼ (TCP Port 80)
+   
    ┌────────────────────────────────┐
    │       Nginx Edge Proxy         │ ───► Generates Structured
    │     (Reverse Proxy Host)       │      JSON logs for SIEM (ELK/Splunk)
    └────────────────────────────────┘
                     │
                     ▼ (Docker Internal Network Bridge)
+   
    ┌────────────────────────────────┐
    │      Aether Core Service       │ ───► Vulnerable Cookie Storage
    │     (Node.js App Container)    │      & Minimalist Signature WAF
    └────────────────────────────────┘
 
 
-3. Infrastructure Sizing & Provisioning Blueprint
+**3. Infrastructure Sizing & Provisioning Blueprint**
 Deploy this lab environment inside a dedicated, isolated hypervisor node (VirtualBox or Proxmox VE) using these system specifications:
 Operating System: Ubuntu Server 24.04 LTS or Debian 12 Minimal
 Processor (vCPUs): 2 Cores (Intel VT-x/AMD-V virtualization enabled)
@@ -35,7 +37,7 @@ chmod +x deploy-enterprise-range.sh
 sudo ./deploy-enterprise-range.sh
 
 
-4. Red Team Playbook: The Compromise Chain
+**4. Red Team Playbook: The Compromise Chain**
 The attack path illustrates the progression from initial discovery to administrative session replay.
 Step 1: Reconnaissance (Web Surface Profiling)
 Scanning the public platform surfaces exposes explicit technology configurations.
@@ -53,7 +55,8 @@ Because the session tracker token (aether_session_state) has the HttpOnly securi
 Step 3: MFA Bypass (Active Session Replay)
 Having captured the active administrative token (aether_sess_admin_x9812y3d), the attacker replays the cookie directly using a proxy tool or developer console.
 The core gateway skips the MFA validation checkpoint (/api/v1/auth/mfa-handshake) because it assumes the inbound request is already validated, giving the attacker access to the internal /console/dashboard.
-4. Blue Team Playbook: Forensics Threat Hunting
+
+**4. Blue Team Playbook: Forensics Threat Hunting**
 This lab includes mock telemetry designed to mirror real cloud environments where data is ingested by SIEM platforms (like Elasticsearch, Splunk, or Wazuh).
 Analyst Hunting Checklist
 [ ] Identify Multi-Location Session Abuse: Locate events where a single token is claimed by non-adjacent IP subnets (e.g., 192.168.1.100 and 10.10.14.50).
